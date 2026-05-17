@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Admin Applicants')}"></head>
+<body>
+    <div th:replace="~{fragments/layout :: header}"></div>
+
+    <main class="container dashboard-grid">
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a th:href="@{/admin/dashboard}"><i class="fa-solid fa-briefcase"></i> All Admin Postings</a>
+                <a th:href="@{/admin/job/new}"><i class="fa-solid fa-plus-circle"></i> Post Global Job</a>
+            </nav>
+        </aside>
+
+        <section>
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+            
+            <a th:href="@{/admin/dashboard}" style="display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                <i class="fa-solid fa-arrow-left"></i> Back to Admin Dashboard
+            </a>
+            
+            <div style="margin-bottom: 2rem;">
+                <h2>Platform Applicants for <span class="text-gradient" th:text="${job.title}">Job</span></h2>
+                <p class="text-muted"><i class="fa-solid fa-users"></i> Total Applicants: <span th:text="${#lists.size(applications)}">0</span></p>
+            </div>
+
+            <div th:if="${#lists.isEmpty(applications)}" class="glass-card" style="text-align: center; padding: 4rem 2rem;">
+                <i class="fa-solid fa-user-xmark" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
+                <h3>No Applicants Yet</h3>
+                <p class="text-muted">Wait for candidates to apply to this global position.</p>
+            </div>
+
+            <div class="table-container" th:unless="${#lists.isEmpty(applications)}">
+                <table class="glass-card" style="padding: 0; overflow: hidden; width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>Applicant Name</th>
+                            <th>Email</th>
+                            <th>Applied Date</th>
+                            <th>Resume</th>
+                            <th>Status</th>
+                            <th>System Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="app : ${applications}">
+                            <td style="font-weight: 500; color: var(--text-main);" th:text="${app.applicant.fullName}">Name</td>
+                            <td th:text="${app.applicant.email}">email@example.com</td>
+                            <td class="text-muted" th:text="${#temporals.format(app.appliedAt, 'dd MMM yyyy HH:mm')}">Date</td>
+                            <td>
+                                <span th:if="${app.applicant.resumePath != null}">
+                                    <i class="fa-solid fa-file-pdf" style="color: var(--danger);"></i>
+                                    [[${app.applicant.resumePath}]]
+                                </span>
+                                <span th:if="${app.applicant.resumePath == null}" class="text-muted">No resume</span>
+                            </td>
+                            <td>
+                                <span th:if="${app.status.name() == 'PENDING'}" class="badge badge-warning">Pending</span>
+                                <span th:if="${app.status.name() == 'SHORTLISTED'}" class="badge badge-success">Shortlisted</span>
+                                <span th:if="${app.status.name() == 'REJECTED'}" class="badge badge-danger">Rejected</span>
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 0.5rem;" th:if="${app.status.name() == 'PENDING'}">
+                                    <form th:action="@{'/admin/application/' + ${app.id} + '/status'}" method="post">
+                                        <input type="hidden" name="status" value="SHORTLISTED">
+                                        <button type="submit" class="btn btn-sm btn-success" title="Shortlist"><i class="fa-solid fa-check"></i></button>
+                                    </form>
+                                    <form th:action="@{'/admin/application/' + ${app.id} + '/status'}" method="post">
+                                        <input type="hidden" name="status" value="REJECTED">
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Reject"><i class="fa-solid fa-times"></i></button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

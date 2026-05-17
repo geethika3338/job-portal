@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Post New Job')}"></head>
+<body>
+    <div th:replace="~{fragments/layout :: header}"></div>
+
+    <main class="container dashboard-grid">
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a th:href="@{/employer/dashboard}"><i class="fa-solid fa-briefcase"></i> Posted Jobs</a>
+                <a th:href="@{/employer/job/new}" class="active"><i class="fa-solid fa-plus-circle"></i> Post New Job</a>
+            </nav>
+        </aside>
+
+        <section>
+            <div class="glass-card">
+                <h2 style="margin-bottom: 2rem;">Post a New Job</h2>
+                
+                <form th:action="@{/employer/job/new}" method="post" th:object="${job}">
+                    <div class="form-group">
+                        <label for="title">Job Title</label>
+                        <input type="text" id="title" th:field="*{title}" class="form-control" required placeholder="e.g. Senior Frontend Developer">
+                        <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" style="color: var(--danger);"></div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 1.5rem;">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="category">Category</label>
+                            <input type="text" id="category" th:field="*{category}" class="form-control" required placeholder="e.g. Engineering">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="location">Location</label>
+                            <input type="text" id="location" th:field="*{location}" class="form-control" required placeholder="e.g. Remote, New York">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="salary">Salary Range</label>
+                            <input type="text" id="salary" th:field="*{salary}" class="form-control" required placeholder="e.g. $80k - $120k">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="skillsRequired">Skills Required (comma separated)</label>
+                        <input type="text" id="skillsRequired" th:field="*{skillsRequired}" class="form-control" placeholder="e.g. React, Spring Boot, MySQL">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Job Description</label>
+                        <textarea id="description" th:field="*{description}" class="form-control" rows="8" required placeholder="Describe the role, responsibilities, and requirements..."></textarea>
+                        <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" style="color: var(--danger);"></div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: flex-end; gap: 1rem;">
+                        <a th:href="@{/employer/dashboard}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Publish Job</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

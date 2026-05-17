@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} + ' - Job Portal'">Job Portal</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Meta tags for SEO -->
+    <meta name="description" content="Connect with top employers and find your dream job on our premium Job Portal platform.">
+</head>
+<body>
+
+<header th:fragment="header">
+    <div class="container nav-container">
+        <a th:href="@{/}" class="logo">
+            <i class="fa-solid fa-briefcase text-gradient"></i>
+            <span>Nova<span class="text-gradient">Jobs</span></span>
+        </a>
+        <div class="nav-links">
+            <a th:href="@{/}">Home</a>
+            
+            <!-- Unauthenticated -->
+            <th:block sec:authorize="!isAuthenticated()">
+                <a th:href="@{/login}">Login</a>
+                <a th:href="@{/register}" class="btn btn-primary btn-sm">Sign Up</a>
+            </th:block>
+            
+            <!-- Authenticated Student -->
+            <th:block sec:authorize="hasRole('STUDENT')">
+                <a th:href="@{/student/dashboard}">Dashboard</a>
+                <a th:href="@{/student/applications}">My Applications</a>
+            </th:block>
+            
+            <!-- Authenticated Employer -->
+            <th:block sec:authorize="hasRole('EMPLOYER')">
+                <a th:href="@{/employer/dashboard}">Dashboard</a>
+                <a th:href="@{/employer/job/new}" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> Post Job</a>
+            </th:block>
+
+            <!-- Authenticated Admin -->
+            <th:block sec:authorize="hasRole('ADMIN')">
+                <a th:href="@{/admin/dashboard}">Admin Dashboard</a>
+                <a th:href="@{/admin/job/new}" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> Post Job</a>
+            </th:block>
+
+            <!-- Logout Form (Authenticated) -->
+            <th:block sec:authorize="isAuthenticated()">
+                <form th:action="@{/logout}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-secondary btn-sm"><i class="fa-solid fa-sign-out-alt"></i> Logout</button>
+                </form>
+            </th:block>
+        </div>
+    </div>
+</header>
+
+<footer th:fragment="footer" style="padding: 2rem 0; text-align: center; color: var(--text-muted); border-top: 1px solid var(--border); margin-top: auto;">
+    <div class="container">
+        <p>&copy; 2026 NovaJobs. Modern platform to find and post jobs.</p>
+    </div>
+</footer>
+
+</body>
+</html>

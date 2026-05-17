@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${job.title})}"></head>
+<body>
+    <div th:replace="~{fragments/layout :: header}"></div>
+
+    <main class="container" style="max-width: 800px;">
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        
+        <a th:href="@{/student/dashboard}" style="display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+            <i class="fa-solid fa-arrow-left"></i> Back to Jobs
+        </a>
+        
+        <div class="glass-card">
+            <div style="border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <h1 th:text="${job.title}" style="color: var(--primary);">Job Title</h1>
+                    <p class="text-muted" style="font-size: 1.125rem;">
+                        <i class="fa-solid fa-building"></i> <span th:text="${job.employer.fullName}">Company Name</span>
+                    </p>
+                </div>
+                
+                <form th:action="@{'/student/job/' + ${job.id} + '/apply'}" method="post">
+                    <button th:if="${!hasApplied}" type="submit" class="btn btn-primary">Apply Now</button>
+                    <button th:if="${hasApplied}" type="button" class="btn btn-success" disabled style="background: var(--secondary); color: white; cursor: not-allowed;"><i class="fa-solid fa-check"></i> Applied</button>
+                </form>
+            </div>
+            
+            <div style="display: flex; gap: 1.5rem; margin-bottom: 2rem;">
+                <div style="background: var(--surface-light); padding: 1rem; border-radius: 8px; flex: 1;">
+                    <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 0.25rem;">Category</p>
+                    <p style="font-weight: 600;" th:text="${job.category}">Category</p>
+                </div>
+                <div style="background: var(--surface-light); padding: 1rem; border-radius: 8px; flex: 1;">
+                    <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 0.25rem;">Location</p>
+                    <p style="font-weight: 600;" th:text="${job.location}">Location</p>
+                </div>
+                <div style="background: var(--surface-light); padding: 1rem; border-radius: 8px; flex: 1;">
+                    <p class="text-muted" style="font-size: 0.875rem; margin-bottom: 0.25rem;">Salary</p>
+                    <p style="font-weight: 600; color: #34D399;" th:text="${job.salary}">Salary</p>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 2rem;">
+                <h3>Job Description</h3>
+                <div style="white-space: pre-wrap; color: var(--text-muted);" th:text="${job.description}"></div>
+            </div>
+            
+            <div>
+                <h3>Skills Required</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem;">
+                    <span th:each="skill : ${#strings.arraySplit(job.skillsRequired, ',')}" 
+                          class="badge badge-primary" 
+                          th:text="${#strings.trim(skill)}">Skill
+                    </span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

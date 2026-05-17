@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('My Applications')}"></head>
+<body>
+    <div th:replace="~{fragments/layout :: header}"></div>
+
+    <main class="container dashboard-grid">
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a th:href="@{/student/dashboard}"><i class="fa-solid fa-search"></i> Browse Jobs</a>
+                <a th:href="@{/student/applications}" class="active"><i class="fa-solid fa-file-alt"></i> My Applications</a>
+            </nav>
+        </aside>
+
+        <section>
+            <h2 style="margin-bottom: 2rem;">My Applications</h2>
+
+            <div th:if="${#lists.isEmpty(applications)}" class="glass-card" style="text-align: center; padding: 4rem 2rem;">
+                <i class="fa-solid fa-folder-open" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
+                <h3>No Applications Yet</h3>
+                <p class="text-muted">You haven't applied to any jobs.</p>
+                <a th:href="@{/student/dashboard}" class="btn btn-primary" style="margin-top: 1rem;">Browse Jobs</a>
+            </div>
+
+            <div class="table-container" th:unless="${#lists.isEmpty(applications)}">
+                <table class="glass-card" style="padding: 0; overflow: hidden;">
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Applied On</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="app : ${applications}">
+                            <td style="font-weight: 500; color: var(--text-main);" th:text="${app.job.title}">Title</td>
+                            <td class="text-muted" th:text="${app.job.employer.fullName}">Company</td>
+                            <td class="text-muted" th:text="${#temporals.format(app.appliedAt, 'dd MMM yyyy')}">Date</td>
+                            <td>
+                                <span th:if="${app.status.name() == 'PENDING'}" class="badge badge-warning">Pending</span>
+                                <span th:if="${app.status.name() == 'SHORTLISTED'}" class="badge badge-success">Shortlisted</span>
+                                <span th:if="${app.status.name() == 'REJECTED'}" class="badge badge-danger">Rejected</span>
+                            </td>
+                            <td>
+                                <a th:href="@{'/student/job/' + ${app.job.id}}" class="btn btn-secondary btn-sm">View Job</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

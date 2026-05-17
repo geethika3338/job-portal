@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Admin Dashboard')}"></head>
+<body>
+    <div th:replace="~{fragments/layout :: header}"></div>
+
+    <main class="container dashboard-grid">
+        <aside class="sidebar">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--danger); color: white; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; margin: 0 auto 1rem;">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <h3 th:text="${#authentication.principal.username}" style="margin-bottom: 0.25rem;">Admin</h3>
+                <p class="text-muted" style="font-size: 0.875rem;">System Administrator</p>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a th:href="@{/admin/dashboard}" class="active"><i class="fa-solid fa-briefcase"></i> All Admin Postings</a>
+                <a th:href="@{/admin/job/new}"><i class="fa-solid fa-plus-circle"></i> Post Global Job</a>
+            </nav>
+        </aside>
+
+        <section>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2>Admin Job Management</h2>
+                <a th:href="@{/admin/job/new}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Post Global Job</a>
+            </div>
+
+            <div th:if="${#lists.isEmpty(jobs)}" class="glass-card" style="text-align: center; padding: 4rem 2rem;">
+                <i class="fa-solid fa-clipboard-list" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
+                <h3>No Global Jobs Posted</h3>
+                <p class="text-muted">You haven't posted any platform-wide jobs yet.</p>
+            </div>
+
+            <div class="job-grid" th:unless="${#lists.isEmpty(jobs)}">
+                <div class="glass-card" th:each="job : ${jobs}" style="display: flex; flex-direction: column;">
+                    <div style="margin-bottom: 1rem;">
+                        <div style="display:flex; justify-content: space-between;">
+                            <h3 th:text="${job.title}" style="margin-bottom: 0.5rem; color: var(--primary);">Job Title</h3>
+                            <span class="badge badge-danger" th:text="${#lists.size(job.applications)} + ' Applicants'">0 Applicants</span>
+                        </div>
+                        <p class="text-muted"><i class="fa-solid fa-layer-group"></i> [[${job.category}]]</p>
+                    </div>
+                    
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem;">
+                        <span class="badge badge-secondary"><i class="fa-solid fa-location-dot"></i> [[${job.location}]]</span>
+                        <span class="badge badge-success"><i class="fa-solid fa-money-bill"></i> [[${job.salary}]]</span>
+                    </div>
+                    
+                    <div style="margin-top: auto; display: flex; gap: 0.5rem;">
+                        <a th:href="@{'/admin/job/' + ${job.id} + '/applicants'}" class="btn btn-danger" style="flex: 1;"><i class="fa-solid fa-users"></i> Manage Applicants</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>
